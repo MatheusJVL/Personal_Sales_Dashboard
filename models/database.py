@@ -14,21 +14,45 @@ class DataBase:
         CREATE TABLE IF NOT EXISTS {TABLE_NAME} (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             date TEXT,
-            custumer TEXT,
             product TEXT,
             price REAL
         )
     ''')
         self.conn.commit()
 
+    def add_sales_data(self):
+        print('===add sale===')
+        product = input('Product Name: ')
+        price = float(input('product price: '))
+        date = input('date of sale: ')
+        sale = Sale(product=product, date=date, price=price)
+
+        self.add_sale(sale)
+
     def add_sale(self, sale: Sale):
         self.cursor.execute(f'INSERT INTO {TABLE_NAME} '
-                            '(date, custumer, product, price) '
-                            'VALUES (?, ?, ?, ?)',
-                            (sale.date, sale.custumer,
-                             sale.product, sale.price)
+                            '(date, product, price) '
+                            'VALUES (?, ?, ?)',
+                            (sale.date, sale.product, sale.price)
                             )
 
     def list_sales(self):
         self.cursor.execute(f'SELECT * FROM {TABLE_NAME}')
-        return self.cursor.fetchall()
+        data = self.cursor.fetchall()
+
+        for d in data:
+            print(f"""\
+                Sale number: {d[0]}'
+                Product Name: {d[2]}
+                Price: {d[3]}
+                Date: {d[1]}
+                \n""")
+
+    def delet_table(self):
+        self.cursor.execute(f'DROP TABLE IF EXISTS {TABLE_NAME}')
+        self.conn.commit()
+
+    def delete_sale_by_id(self, id: int):
+        self.cursor.execute('DELETE FROM {TABLE_NAME} WHERE id = ?', (id,))
+        self.conn.commit()
+

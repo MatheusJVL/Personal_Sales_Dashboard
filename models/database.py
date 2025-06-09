@@ -35,18 +35,12 @@ class DataBase:
                             'VALUES (?, ?, ?)',
                             (sale.date, sale.product, sale.price)
                             )
+        self.conn.commit()
 
     def list_sales(self):
         self.cursor.execute(f'SELECT * FROM {TABLE_NAME}')
         data = self.cursor.fetchall()
-
-        for d in data:
-            print(f"""\
-                Sale number: {d[0]}'
-                Product Name: {d[2]}
-                Price: {d[3]}
-                Date: {d[1]}
-                \n""")
+        return data
 
     def delet_table(self):
         self.cursor.execute(f'DROP TABLE IF EXISTS {TABLE_NAME}')
@@ -55,4 +49,3 @@ class DataBase:
     def delete_sale_by_id(self, id: int):
         self.cursor.execute('DELETE FROM {TABLE_NAME} WHERE id = ?', (id,))
         self.conn.commit()
-

@@ -1,6 +1,6 @@
 import sqlite3
 from models.sale import Sale
-
+from datetime import datetime
 TABLE_NAME = 'sales'
 
 
@@ -9,7 +9,7 @@ class DataBase:
         self.conn = sqlite3.connect(db_path)
         self.cursor = self.conn.cursor()
 
-    def creat_table(self):
+    def create_table(self):
         self.cursor.execute(f'''
         CREATE TABLE IF NOT EXISTS {TABLE_NAME} (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -47,5 +47,42 @@ class DataBase:
         self.conn.commit()
 
     def delete_sale_by_id(self, id: int):
-        self.cursor.execute('DELETE FROM {TABLE_NAME} WHERE id = ?', (id,))
+        self.cursor.execute(f'DELETE FROM {TABLE_NAME} WHERE id = ?', (id,))
         self.conn.commit()
+
+    def extract_month_year(self, date_str: str):
+        dt = datetime.strptime(date_str, '%d/%m/%Y')
+        return dt.strftime('%m/%Y')
+
+    def revenue_by_month(self):
+        revenue_by_month = {}  # type: ignore
+        sales = self.list_sales()
+        for sale in sales:
+            date = sale[1]
+            price = sale[3]
+            month = self.extract_month_year(date)
+
+            if month in revenue_by_month:
+                revenue_by_month[month] += price
+            else:
+                revenue_by_month[month] = price
+            sorted_months = sorted(revenue_by_month.keys(),
+                                   key=lambda m: datetime.strptime(m, '%m/%Y'))
+            values = [revenue_by_month[m] for m in sorted_months]
+        return (sorted_months, values)
+
+    def revenue_by_day(self):
+        revenue_by_day = {}
+        sales = self.list_sales()
+        for data in sales:
+            date = data[1]
+            price = data[3]
+            if date in revenue_by_day:
+                revenue_by_day[date] += price
+            else:
+                revenue_by_day[date] = price
+            dates = sorted(revenue_by_day.keys(),
+                           key=lambda d: datetime.strptime(d, "%d/%m/%Y"))
+            values = [revenue_by_day[d] for d in dates]
+
+        return (dates, values)

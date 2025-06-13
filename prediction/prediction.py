@@ -20,10 +20,6 @@ def predict_future_month(months_to_predict: int = 4):
     future_y = model.predict(future_x)
 
     last_date = datetime.strptime(sorted_months[-1], '%m/%Y')
-    future_months = [(last_date + relativedelta(month=1 * i)).strftime('%m/%Y')
+    future_months = [(last_date + relativedelta(months=i)).strftime('%m/%Y')
                      for i in range(1, months_to_predict + 1)]
-
-    all_months = sorted_months + future_months
-    all_revenue = list(y) + list(future_y)
-
-    return (all_months, all_revenue)
+    return (future_months, future_y)

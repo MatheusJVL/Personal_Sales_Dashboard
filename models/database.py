@@ -66,9 +66,9 @@ class DataBase:
                 revenue_by_month[month] += price
             else:
                 revenue_by_month[month] = price
-            sorted_months = sorted(revenue_by_month.keys(),
-                                   key=lambda m: datetime.strptime(m, '%m/%Y'))
-            values = [revenue_by_month[m] for m in sorted_months]
+        sorted_months = sorted(revenue_by_month.keys(),
+                               key=lambda m: datetime.strptime(m, '%m/%Y'))
+        values = [revenue_by_month[m] for m in sorted_months]
         return (sorted_months, values)
 
     def revenue_by_day(self):
@@ -81,8 +81,41 @@ class DataBase:
                 revenue_by_day[date] += price
             else:
                 revenue_by_day[date] = price
-            dates = sorted(revenue_by_day.keys(),
-                           key=lambda d: datetime.strptime(d, "%d/%m/%Y"))
-            values = [revenue_by_day[d] for d in dates]
-
+        dates = sorted(revenue_by_day.keys(),
+                       key=lambda d: datetime.strptime(d, "%d/%m/%Y"))
+        values = [revenue_by_day[d] for d in dates]
         return (dates, values)
+
+    def top_product_by_month(self):
+        products_by_month = {}
+        repetiton_by_product = {}
+        sales = self.list_sales()
+
+        for sale in sales:
+            date = sale[1]
+            product = sale[2]
+            month = self.extract_month_year(date)
+            if month in products_by_month:
+                products_by_month[month].append(product)
+            else:
+                products_by_month[month] = [product]
+
+        sorted_products_by_month = dict(
+            sorted(products_by_month.items(),
+                   key=lambda m: datetime.strptime(m[0], '%m/%Y')))
+
+        top_products_by_month = {}
+
+        for month, list in sorted_products_by_month.items():
+            most_repeated_product = None
+            most_repetitions = 0
+            for p in list:
+                repetitions = list.count(p)
+                if repetitions > most_repetitions:
+                    most_repeated_product = p
+                    most_repetitions = repetitions
+
+            top_products_by_month[month] = most_repeated_product
+            repetiton_by_product[month] = most_repetitions
+
+        return top_products_by_month, repetiton_by_product

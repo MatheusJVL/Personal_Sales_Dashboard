@@ -6,6 +6,7 @@ from models.database import DataBase
 
 
 def predict_future_month(months_to_predict: int = 4):
+    float(months_to_predict)
     db = DataBase()
     sorted_months, values = db.revenue_by_month()  # type: ignore
 

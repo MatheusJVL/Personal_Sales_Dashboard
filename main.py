@@ -1,37 +1,37 @@
 from models.database import DataBase
 from models.sale import Sale
+from charts import charts
+from prediction.prediction import predict_future_month
 
 
 def main():
-    db = DataBase()
-    db.delet_table()
-    db.create_table()
-    sale = Sale(20.4, 'liquidificador', '14/12/2005')
-    db.add_sale(sale)
-    sale = Sale(4, 'churrasqueira', '07/10/2006')
-    db.add_sale(sale)
-    sale = Sale(11, 'liquidificador', '20/06/2005')
-    db.add_sale(sale)
-    sale = Sale(20.4, 'isopor', '14/04/2005')
-    db.add_sale(sale)
-    sale = Sale(20.4, 'liquidificador', '14/02/2005')
-    db.add_sale(sale)
-    sale = Sale(20.4, 'ventilador', '14/07/2005')
-    db.add_sale(sale)
-    sale = Sale(20.4, 'brigadeiro', '14/10/2005')
-    db.add_sale(sale)
-    sale = Sale(20.4, 'brigadeiro', '14/10/2005')
-    db.add_sale(sale)
-    sale = Sale(20.4, 'brigadeiro', '14/10/2005')
-    db.add_sale(sale)
-    sale = Sale(20.4, 'brigadeiro', '14/10/2005')
-    db.add_sale(sale)
-    sale = Sale(20.4, 'brigadeiro', '14/10/2005')
-    db.add_sale(sale)
+    while True:
+        print("\n--- MENU ---")
+        print("[1] Adicionar nova venda")
+        print("[2] Ver gráfico diário")
+        print("[3] Ver gráfico mensal")
+        print("[4] Prever faturamento")
+        print("[5] Produto mais vendido por mês")
+        print("[0] Sair")
 
-    d = db.list_sales()
-    for c in d:
-        print(c)
+        choice = input("Escolha uma opção: ")
+
+        if choice == "1":
+            # solicitar dados e chamar db.add_sale()
+            ...
+        elif choice == "2":
+            charts.daily_revenue_chart()
+        elif choice == "3":
+            charts.month_revenue_chart()
+        elif choice == "4":
+            charts.predict_month_revenue_chart()
+        elif choice == "5":
+            charts.top_product_by_month_chart()
+            ...
+        elif choice == "0":
+            break
+        else:
+            print("Opção inválida.")
 
 
 if __name__ == '__main__':

@@ -6,7 +6,9 @@ from models.database import DataBase
 
 
 def predict_future_month(months_to_predict: int = 4):
-    float(months_to_predict)
+    if months_to_predict <= 0:
+        raise ValueError('choose a positive integer')
+
     db = DataBase()
     sorted_months, values = db.revenue_by_month()  # type: ignore
 
@@ -23,4 +25,5 @@ def predict_future_month(months_to_predict: int = 4):
     last_date = datetime.strptime(sorted_months[-1], '%m/%Y')
     future_months = [(last_date + relativedelta(months=i)).strftime('%m/%Y')
                      for i in range(1, months_to_predict + 1)]
-    return (future_months, future_y)
+
+    return (future_months, future_y, sorted_months)

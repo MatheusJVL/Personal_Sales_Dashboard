@@ -24,10 +24,10 @@ class Sale:
 
     @product.setter
     def product(self, product):
-        str(product)
         if not product.isalpha():
-            raise ValueError('Only characters')
-        self._product = product
+            raise ValueError('Only characters, no accents')
+        else:
+            self._product = product
 
     @property
     def date(self):
@@ -46,3 +46,4 @@ class Sale:
             f"price={self.price},\n"
             f"product={self.product},\n"
             )
+         

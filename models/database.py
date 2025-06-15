@@ -1,13 +1,17 @@
 import sqlite3
 from models.sale import Sale
 from datetime import datetime
-TABLE_NAME = 'sales'
+from utils import colors as co
+TABLE_NAME = 'sales_table'
 
 
 class DataBase:
-    def __init__(self, db_path='data\\vendas.db'):
+    def __init__(self, db_path='data\\sales.db'):
+        import os
+        os.makedirs(os.path.dirname(db_path), exist_ok=True)
         self.conn = sqlite3.connect(db_path)
         self.cursor = self.conn.cursor()
+        self.create_table()
 
     def create_table(self):
         self.cursor.execute(f'''
@@ -21,11 +25,13 @@ class DataBase:
         self.conn.commit()
 
     def add_sales_data(self):
-        print('===add sale===')
-        product = input('Product Name: ')
-        price = float(input('product price: '))
-        date = input('date of sale: ')
-        sale = Sale(product=product, date=date, price=price)
+        product = input(co.print_cyan('Product Name: '))
+        if not product.isalpha():
+            raise ValueError('')
+        price = float(input(co.print_cyan('product price: ')))
+        date = input(co.print_cyan('date of sale: '))
+
+        sale = Sale(price, product, date)
 
         self.add_sale(sale)
 
@@ -42,9 +48,10 @@ class DataBase:
         data = self.cursor.fetchall()
         return data
 
-    def delet_table(self):
+    def delete_table(self):
         self.cursor.execute(f'DROP TABLE IF EXISTS {TABLE_NAME}')
         self.conn.commit()
+        self.create_table()
 
     def delete_sale_by_id(self, id: int):
         self.cursor.execute(f'DELETE FROM {TABLE_NAME} WHERE id = ?', (id,))

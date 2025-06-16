@@ -4,9 +4,7 @@ from prediction.prediction import predict_future_month
 
 
 def load_chart_data(n_predict=4):
-    """
-    Carrega dados para os gráficos, incluindo predição para n_predict meses.
-    """
+    
     db = DataBase()
     try:
         months = []
@@ -73,9 +71,7 @@ def month_revenue_chart():
 
 
 def predict_month_revenue_chart(n):
-    """
-    Gera gráfico combinando receita real e previsão para os próximos n meses.
-    """
+
     plt.figure(figsize=(10, 5))
     plt.title("Revenue Forecast for Next Months")
     plt.xlabel("Month")
@@ -84,13 +80,12 @@ def predict_month_revenue_chart(n):
     plt.grid(True)
     plt.tight_layout()
 
-    # Carrega dados com predição para n meses
     data = load_chart_data(n_predict=n)
     if data:
-        # Plota receita real
+
         plt.plot(data['months_dates'], data['values_months'],
                  color='blue', linestyle='-', marker='o', label='Real Revenue')
-        # Plota receita prevista
+
         plt.plot(data['predict_months'], data['predict_values'],
                  color='red', linestyle='-', marker='*', label='Predicted Revenue')
 

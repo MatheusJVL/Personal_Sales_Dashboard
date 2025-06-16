@@ -3,6 +3,7 @@ from charts import charts
 from prediction.prediction import predict_future_month
 from utils import colors as co
 from time import sleep
+import os
 db = DataBase()
 
 
@@ -15,6 +16,7 @@ def run_forecast():
 
 
 def main():
+    os.system('cls')
     while True:
         print()
         print(co.print_bold("--- MENU ---"))
@@ -33,6 +35,7 @@ def main():
             print(co.print_yellow('Enter the date in the format: dd/mm/yyyy'))
             try:
                 print(co.print_bold('===add sale==='))
+                print(co.print_yellow('Type R to return to the menu.'))
                 db.add_sales_data()
                 print(co.print_green('Sale added successfully.'))
                 sleep(1.5)
@@ -40,6 +43,9 @@ def main():
                 print(
                     co.print_red(f'\nInvalid data, please try again: {e.__class__.__name__}'
                     ))
+                sleep(1.5)
+            except TypeError:
+                print(co.print_blue('Returning to the menu'))
                 sleep(1.5)
         elif choice == "2":
             charts.daily_revenue_chart()
@@ -56,7 +62,14 @@ def main():
                 sleep(1.5)
                 continue
             try:
-                n = int(input(co.print_yellow('How many future months do you want to forecast? ')))
+                print(co.print_yellow('Type R to return to the menu.'))
+                n = (input(co.print_yellow('How many future months do you want to forecast? ')))
+                if n.upper() == 'R':
+                    print(co.print_blue('Returning to the menu'))
+                    sleep(1.5)
+                    continue
+                else:
+                    n = int(n)
                 if n <= 0:
                     raise ValueError()
             except ValueError:
@@ -72,13 +85,19 @@ def main():
                 print(co.print_red('\nNo sales to delete, please add a sale first'))
                 sleep(1.5)
                 continue
-            print(co.print_bold('\n=== Sales ==='))
+
+            print(co.print_blue('\n=== Sales ==='))
             for sale in db.list_sales():
-                print(
-                    co.print_white(f'\nSale number: [{co.print_cyan(str(sale[0]))}], Date: {sale[1]}, '
-                    f'Product: {sale[2]}, Price: R$ {sale[3]}'
-                    ))
+                print(co.print_gray(f'\nSale number: [{co.print_cyan(sale[0])}'), end='')
+                print(co.print_gray(f'], Date: {sale[1]}, Product: {sale[2]}, Price: R$ {sale[3]}'))
+
+            print(co.print_yellow('Type R to return to the menu.'))
             sale_id = input(co.print_yellow('Select the sale number you wish to delete: '))
+
+            if sale_id.upper() == 'R':
+                print(co.print_blue('Returning to the menu'))
+                sleep(1.5)
+                continue
             if sale_id.isdigit():
                 sale_id = int(sale_id)
                 sales_ids = [sale[0] for sale in db.list_sales()]
@@ -98,6 +117,12 @@ def main():
                 "Are you sure you want to delete all data? This will "
                 f"permanently remove the database table. [{co.print_green('Y')}{co.print_yellow('/')}{co.print_red('N')}{co.print_yellow(']')}: "
                 )).strip().upper()
+            
+            if y_n == 'R':
+                print(co.print_blue('Returning to the menu'))
+                sleep(1.5)
+                continue
+
             if not y_n or y_n[0] not in 'YN':
                 print(co.print_red('Please enter yes or no.'))
                 sleep(1.5)

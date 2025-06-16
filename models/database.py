@@ -27,7 +27,9 @@ class DataBase:
     def add_sales_data(self):
         product = input(co.print_cyan('Product Name: '))
         if not product.isalpha():
-            raise ValueError('')
+            raise ValueError
+        elif product.upper() == 'R':
+            raise TypeError
         price = float(input(co.print_cyan('product price: ')))
         date = input(co.print_cyan('date of sale: '))
 

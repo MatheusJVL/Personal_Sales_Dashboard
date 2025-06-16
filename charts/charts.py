@@ -104,8 +104,8 @@ def top_product_by_month_chart():
             h = bar.get_height()
             ax.text(bar.get_x() + bar.get_width()/2, h,
                     prod, ha='center', va='bottom', rotation=0, fontsize=8)
-        ax.set_ylabel('Quantidade vendida')
-        ax.set_title('Produto mais vendido por mês')
+        ax.set_ylabel('Quantity sold')
+        ax.set_title('Best-selling product by month')
         plt.xticks(rotation=45)
         plt.tight_layout()
         plt.show()
